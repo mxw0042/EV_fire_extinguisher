@@ -10,6 +10,7 @@
 //These values are in the datasheet
 #define RT0 10000   // Ω
 #define B 3977      // K
+#define THRESHOLD 25
       
 //--------------------------------------
 
@@ -30,7 +31,7 @@ void setup() {
 }
 
 void loop() {
-  int myPins[] = {A0, A1, A2, A3};
+  int myPins[] = {A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11};
   int myLEDs[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 22, 24, 26, 28};
   for (int i=0; i<(sizeof(myPins)/sizeof(int)); i++){
       readTemp(myPins[i], myLEDs[i]);
@@ -61,7 +62,7 @@ void readTemp(int pin, int LED){
     
   TX = TX - 273.15;                 //Conversion to Celsius
     
-  if (TX>20){
+  if (TX>THRESHOLD){
     digitalWrite(LED, HIGH);
   }
   else {
@@ -70,6 +71,6 @@ void readTemp(int pin, int LED){
 
   Serial.print("\t");
   Serial.print(TX);
-  Serial.print("C\t\t");
+  Serial.print("C\t");
   delay(50);
 }
