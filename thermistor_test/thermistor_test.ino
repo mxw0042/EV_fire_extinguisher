@@ -20,10 +20,11 @@
 
 //Variables
 float RT, VR, ln, TX, T0, VRT;
+int myLEDs[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 22, 24, 26, 28};
+int myPins[] = {A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11};
 
 void setup() {
   Serial.begin(9600);
-  int myLEDs[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 22, 24, 26, 28};
   for (int i=0; i<(sizeof(myLEDs)/sizeof(int)); i++){
     pinMode(myLEDs[i], OUTPUT); 
   }
@@ -31,8 +32,6 @@ void setup() {
 }
 
 void loop() {
-  int myPins[] = {A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11};
-  int myLEDs[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 22, 24, 26, 28};
   for (int i=0; i<(sizeof(myPins)/sizeof(int)); i++){
       readTemp(myPins[i], myLEDs[i]);
     
