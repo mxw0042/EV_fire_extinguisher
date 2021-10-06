@@ -10,7 +10,8 @@
 //These values are in the datasheet
 #define RT0 10000   // Ω
 #define B 3977      // K
-#define THRESHOLD 25
+#define RATE_THRESHOLD 0.1
+#define TEMP_THRESHOLD 30
       
 //--------------------------------------
 
@@ -22,6 +23,7 @@
 float RT, VR, ln, TX, T0, VRT;
 int myLEDs[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 22, 24, 26, 28};
 int myPins[] = {A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11};
+float txPrev[sizeof(myLEDs)/sizeof(int)];
 
 void setup() {
   Serial.begin(9600);
@@ -33,8 +35,10 @@ void setup() {
 
 void loop() {
   for (int i=0; i<(sizeof(myPins)/sizeof(int)); i++){
-      readTemp(myPins[i], myLEDs[i]);
-    
+      txPrev[i]=readTemp(myPins[i], myLEDs[i], txPrev[i]);
+      if (i==3||i==7){
+        Serial.println();
+      }
 //      Serial.print("Temperature ");
 //      Serial.print(i);
 //      Serial.print(" :");
@@ -48,9 +52,10 @@ void loop() {
       
   }
   Serial.println();
+  Serial.println("-----------------------------------------------------------------------");
 }
 
-void readTemp(int pin, int LED){
+float readTemp(int pin, int LED, float prev){
   VRT = analogRead(pin);              //Acquisition analog value of VRT
   VRT = (5.00 / 1023.00) * VRT;      //Conversion to voltage
   VR = VCC - VRT;
@@ -61,7 +66,7 @@ void readTemp(int pin, int LED){
     
   TX = TX - 273.15;                 //Conversion to Celsius
     
-  if (TX>THRESHOLD){
+  if ((TX-prev)>RATE_THRESHOLD || TX>TEMP_THRESHOLD){
     digitalWrite(LED, HIGH);
   }
   else {
@@ -72,4 +77,5 @@ void readTemp(int pin, int LED){
   Serial.print(TX);
   Serial.print("C\t");
   delay(50);
+  return TX;
 }
